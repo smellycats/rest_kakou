@@ -24,6 +24,7 @@ class Logo extends Parsing_Controller
         $this->load->model('Mlogo');
 
         $this->load->helper('url');
+        $this->load->helper('date');
 
         header('Cache-Control:public, max-age=60, s-maxage=60');
         header('Content-Type: application/json');
@@ -166,19 +167,52 @@ class Logo extends Parsing_Controller
 
     /**
      * get fresh carinfo
-     * 获取车辆类型列表
+     * 获取最新车辆信息
      *
      * @return json
      */
     function fresh_get()
     {
-        $id = (int)$this->uri->segment(4);
-        $query = $this->Mlogo->getCarinfoById($id);
-        $result = $query->row_array();
-        $result['imgurl'] = 'http://' . $this->imgip[$result['img_ip']] . '/SpreadData' . $result['img_disk']. '/' . $result['img_path'];
-        unset($result['img_ip']);
-        unset($result['img_disk']);
-        unset($result['img_path']);
+        if (empty(@$this->gets['q'])) {
+            $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
+            $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
+        }
+        // 解析q参数
+        $q_arr = h_convertParam($this->gets['q']);
+        $user_id = @$q_arr['q'];
+        $fresh = $this->Mlogo->getFreshByUserId($user_id);
+        
+        if ($fresh->num_rows() == 0) {
+            $query = $this->Mlogo->getFresh($q_arr);
+            $carinfo_id = $query->num_rows == 0 ? 0 : $query->row()->id;
+            $this->Mlogo->addFresh(array('user_id'=>$user_id, 'carinfo_id'=>$carinfo_id, 'modified'=>mdate('%Y-%m-%d %H:%m:%s')));
+        } else {
+            #var_dump('test');
+            $q_arr['id'] = $fresh->row()->carinfo_id;
+            $i = 0;
+            while ($i < 120){
+                #var_dump('test123');
+                $query = $this->Mlogo->getFresh($q_arr);
+                if ($query->num_rows() == 0){
+                    $i++;
+                    #continue;
+                } else {
+                    $carinfo_id = $query->row()->id;
+                    $this->Mlogo->setFresh($user_id, array('carinfo_id'=>$carinfo_id, 'modified'=>mdate('%Y-%m-%d %H:%m:%s')));
+                    break;
+                }
+                usleep(250000);
+                #var_dump($i);
+            }
+        }
+        $result['items'] = $query->result_array();
+        $result['total_num'] = $query->num_rows();
+        foreach($result['items'] as $id=>$row) {
+            $row['imgurl'] = 'http://' . $this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . $row['img_path'];
+            unset($row['img_ip']);
+            unset($row['img_disk']);
+            unset($row['img_path']);
+        }
         header("HTTP/1.1 200 OK");
         header('Cache-Control:max-age=0');
         echo json_encode($result);
