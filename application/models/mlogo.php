@@ -133,7 +133,7 @@ class Mlogo extends CI_Model
 		return $this->logo_db->get('carinfo as i');
 	}
 
-	public function getFresh($data, $offset=0, $limit=20)
+	public function getFresh($data, $offset=0, $limit=10)
 	{
 		$this->logo_db->select('i.id');
 		$this->logo_db->select('i.passtime as jgsj');
@@ -165,7 +165,16 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
 		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
-		$this->logo_db->where('i.id >', $data['id']);
+		if (isset($data['id'])) {
+			$this->logo_db->where('i.id >', $data['id']);
+		}
+		if (isset($data['place'])) {
+			$this->logo_db->where('i.cltx_place', $data['place']);
+		}
+		if (isset($data['fxbh'])) {
+			$this->logo_db->where('i.cltx_dire', $data['fxbh']);
+		}
+
 		if (isset($data['match'])) {
 			if ($data['match'] == 1) {
 				$this->logo_db->where('');
@@ -176,6 +185,25 @@ class Mlogo extends CI_Model
 		$this->logo_db->order_by('i.id', 'desc');
 		return $this->logo_db->get('carinfo as i', $limit, $offset);
 	}
+
+	public function getFreshByUserId($user_id)
+	{
+		$this->logo_db->select('*');
+		$this->logo_db->where('user_id', $user_id);
+		return $this->logo_db->get('fresh');
+	}
+
+	public function addFresh($data)
+	{
+		return $this->logo_db->insert('fresh', $data);
+	}
+
+	public function setFresh($user_id, $data)
+	{
+		$this->logo_db->where('user_id', $user_id);
+		return $this->logo_db->update('fresh', $data);
+	}
+
 }
 ?>
 
