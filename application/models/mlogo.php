@@ -97,6 +97,12 @@ class Mlogo extends CI_Model
 		return $this->logo_db->get('clpp2_dict');
 	}
 
+    /**
+     * 根据id获取车辆信息
+     * 
+     * @param int $id carinfo表id
+     * @return object
+     */
 	public function getCarinfoById($id)
 	{
 		$this->logo_db->select('i.id');
@@ -133,6 +139,14 @@ class Mlogo extends CI_Model
 		return $this->logo_db->get('carinfo as i');
 	}
 
+    /**
+     * 获取最新车辆信息
+     * 
+     * @param array $data 查询条件数组
+     * @param int   $offset 偏移量
+     * @param int   $limit 行数
+     * @return object
+     */
 	public function getFresh($data, $offset=0, $limit=10)
 	{
 		$this->logo_db->select('i.id');
@@ -186,6 +200,12 @@ class Mlogo extends CI_Model
 		return $this->logo_db->get('carinfo as i', $limit, $offset);
 	}
 
+    /**
+     * 根据用户id获取最新车辆信息
+     * 
+     * @param int $user_id 用户id
+     * @return object
+     */
 	public function getFreshByUserId($user_id)
 	{
 		$this->logo_db->select('*');
@@ -193,11 +213,24 @@ class Mlogo extends CI_Model
 		return $this->logo_db->get('fresh');
 	}
 
+    /**
+     * 添加fresh表信息
+     * 
+     * @param array $data 添加信息
+     * @return object
+     */
 	public function addFresh($data)
 	{
 		return $this->logo_db->insert('fresh', $data);
 	}
 
+    /**
+     * 根据用户id修改fresh
+     * 
+     * @param int   $user_id 用户ID
+     * @param array $data 修改信息
+     * @return object
+     */
 	public function setFresh($user_id, $data)
 	{
 		$this->logo_db->where('user_id', $user_id);
