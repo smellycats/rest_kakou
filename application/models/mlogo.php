@@ -61,6 +61,17 @@ class Mlogo extends CI_Model
 	}
 
     /**
+     * 获取方向编号
+     * 
+     * @return object
+     */
+	public function getFxbh()
+	{	
+		$this->logo_db->select('id, dire as name');
+		return $this->logo_db->get('directions');
+	}
+
+    /**
      * 获取卡口地点
      * 
      * @return object

@@ -101,6 +101,23 @@ class Logo extends Parsing_Controller
     }
 
     /**
+     * get fxbh
+     * 获取方向编号列表
+     *
+     * @return json
+     */
+    function fxbh_get()
+    {
+        $query = $this->Mlogo->getFxbh();
+        $result = array();
+        foreach($query->result() as $id=>$row) {
+            $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->name);
+        }
+        header("HTTP/1.1 200 OK");
+        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
+    }
+
+    /**
      * get place
      * 获取车辆类型列表
      *
@@ -205,10 +222,10 @@ class Logo extends Parsing_Controller
         $result['items'] = $query->result_array();
         $result['total_count'] = $query->num_rows();
         foreach($result['items'] as $id=>$row) {
-            $row['imgurl'] = 'http://' . $this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . $row['img_path'];
-            unset($row['img_ip']);
-            unset($row['img_disk']);
-            unset($row['img_path']);
+            $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            unset($result['items'][$id]['img_ip']);
+            unset($result['items'][$id]['img_disk']);
+            unset($result['items'][$id]['img_path']);
         }
         header("HTTP/1.1 200 OK");
         header('Cache-Control:max-age=0');
