@@ -142,8 +142,6 @@ class Logo extends Parsing_Controller
      */
     function ppdm_get()
     {
-        header("HTTP/1.1 200 OK");
-
         $code = $this->uri->segment(4);
         if ($code == Null) {
             $query = $this->Mlogo->getPpdm();
@@ -158,6 +156,7 @@ class Logo extends Parsing_Controller
             foreach($query->result() as $id=>$row) {
                 $result[$id] = array('code' => $row->clpp2, 'name' => $row->name2);
             }
+            header("HTTP/1.1 200 OK");
             echo json_encode(array('total_count' => $query->num_rows(), 'code' => $code, 'items' => $result));
         }
     }
@@ -223,6 +222,68 @@ class Logo extends Parsing_Controller
         $result['total_count'] = $query->num_rows();
         foreach($result['items'] as $id=>$row) {
             $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            unset($result['items'][$id]['img_ip']);
+            unset($result['items'][$id]['img_disk']);
+            unset($result['items'][$id]['img_path']);
+        }
+        header("HTTP/1.1 200 OK");
+        header('Cache-Control:max-age=0');
+        echo json_encode($result);
+    }
+
+    /**
+     * get fresh carinfo
+     * 获取最新车辆信息
+     *
+     * @return json
+     */
+    function fresh2_get()
+    {
+        if (empty(@$this->gets['q'])) {
+            $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
+            $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
+        }
+        $img_array = [
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/1.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/2.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/3.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/4.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/5.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/6.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/7.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/8.jpg'
+        ];
+        // 解析q参数
+        $q_arr = h_convertParam($this->gets['q']);
+        $user_id = @$q_arr['q'];
+        $fresh = $this->Mlogo->getFreshByUserId($user_id);
+        
+        if ($fresh->num_rows() == 0) {
+            $query = $this->Mlogo->getFresh($q_arr);
+            $carinfo_id = $query->num_rows == 0 ? 0 : $query->row()->id;
+            $this->Mlogo->addFresh(array('user_id'=>$user_id, 'carinfo_id'=>$carinfo_id, 'modified'=>mdate('%Y-%m-%d %H:%m:%s')));
+        } else {
+            $q_arr['id'] = $fresh->row()->carinfo_id;
+            $i = 0;
+            while ($i < 120){
+                $query = $this->Mlogo->getFresh($q_arr);
+                if ($query->num_rows() == 0){
+                    $i ++;
+                } else {
+                    $carinfo_id = $query->row()->id;
+                    $this->Mlogo->setFresh($user_id, array('carinfo_id'=>$carinfo_id, 'modified'=>mdate('%Y-%m-%d %H:%m:%s')));
+                    break;
+                }
+                # 休眠250毫秒
+                usleep(250000);
+            }
+        }
+        $result['items'] = $query->result_array();
+        $result['total_count'] = $query->num_rows();
+        foreach($result['items'] as $id=>$row) {
+            //$result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            #$rand_key = array_rand($img_array,1);
+            $result['items'][$id]['imgurl'] = $img_array[array_rand($img_array,1)];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);

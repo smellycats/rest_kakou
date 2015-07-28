@@ -47,4 +47,11 @@ class Admin extends Parsing_Controller
         $this->response(array('username'=>$this->post('username'), 'message'=>'Unauthorized'), 401);
     }
 
+    function test_post()
+    {
+        var_dump($this->input->post());
+        var_dump('123');
+        var_dump($this->post('username'));
+    }
+
 }
