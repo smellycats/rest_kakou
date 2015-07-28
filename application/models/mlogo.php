@@ -98,6 +98,7 @@ class Mlogo extends CI_Model
     /**
      * 获取子品牌代码
      * 
+     * @param string $code 主品牌代码（3位）
      * @return object
      */
 	public function getPpdmByCode($code)
