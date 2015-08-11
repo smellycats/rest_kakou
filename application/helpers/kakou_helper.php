@@ -69,3 +69,29 @@ if ( ! function_exists('h_convertParam'))
         return $params;
     }
 }
+
+/**
+ * h_create_img_url
+ *
+ * q 生成图片url地址
+ *
+ * @access public
+ * @param array $carinfo 车辆信息数组
+ * @param bool  $wm_open 是否加水印
+ * @return string
+ */
+
+ if ( ! function_exists('h_create_img_url'))
+{
+    function h_create_img_url($carinfo, $wm_open=FALSE)
+    {   
+        $CI = & get_instance();
+        $CI->load->helper('url');
+        
+        if ($wm_open) {
+            return base_url() . 'index.php/watermark/wm_img?id=' . $carinfo['ID'];
+        } else {
+            return 'http://10.47.187.166/$carinfo[QMTP]/$carinfo[TJTP]';
+        }
+    }
+}
