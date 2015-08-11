@@ -194,7 +194,8 @@ class Logo extends Parsing_Controller
             $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
         }
         // 解析q参数
-        $q_arr = h_convertParam($this->gets['q']);
+        $q_arr = h_convert_param($this->gets['q']);
+        //var_dump($q_arr);
         if (empty(@$q_arr['st'])) {
             $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
         }
@@ -219,6 +220,7 @@ class Logo extends Parsing_Controller
         }
         header("HTTP/1.1 200 OK");
         header('Cache-Control:max-age=0');
+        //var_dump($result);
         echo json_encode($result);
     }
 

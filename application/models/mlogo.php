@@ -190,7 +190,7 @@ class Mlogo extends CI_Model
 		}
 		if (isset($q['hphm'])) {
 			if ($q['hphm'] != 'NULL' and $q['hphm'] != '') {
-				$this->logo_db->like('i.cltx_hphm', $q['hphm'], 'after');
+				$this->logo_db->where('i.cltx_hphm like ', $q['hphm'] . '%');
 			}
 		}
 
@@ -248,7 +248,7 @@ class Mlogo extends CI_Model
 			}
 			$this->logo_db->order_by($s, $o);
 			
-			return $this->logo_db->get('carinfo as i', $per_page, $page * $per_page);
+			return $this->logo_db->get('carinfo as i', $per_page, ($page - 1) * $per_page);
 		}
 	}
     /**
