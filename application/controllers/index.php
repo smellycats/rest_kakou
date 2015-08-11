@@ -20,6 +20,9 @@ class Index extends CI_Controller
         parent::__construct();
 
         $this->load->helper('url');
+
+        header('Cache-Control:public, max-age=60, s-maxage=60');
+        header('Content-Type: application/json');
     }
     
     /**
@@ -29,8 +32,12 @@ class Index extends CI_Controller
      */
     function index()
     {
-        $url_array = ['cgs_url' => site_url('cgs/vehicles?q={query}')];
-        echo json_encode($url_array, true);
+        $url_array = [
+            'v1_url' => site_url('v1')
+        ];
+
+        $json = json_encode($url_array, true);
+        echo str_replace("\/", "/", $json);
     }
 
 }

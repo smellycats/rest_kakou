@@ -26,7 +26,7 @@ class Logo extends Parsing_Controller
         $this->load->helper('url');
         $this->load->helper('date');
 
-        header('Cache-Control:public, max-age=60, s-maxage=60');
+        header('Cache-Control: public, max-age=60, s-maxage=60');
         header('Content-Type: application/json');
 
         $this->imgip = array('1' => '127.0.0.1', '2' => '127.0.0.1');
@@ -178,6 +178,49 @@ class Logo extends Parsing_Controller
         unset($result['img_path']);
         header("HTTP/1.1 200 OK");
         header('Cache-Control:max-age=0');
+        echo json_encode($result);
+    }
+
+    /**
+     * get carinfos by id
+     * 获取车辆类型列表
+     *
+     * @return json
+     */
+    function carinfos_get()
+    {
+        if (empty(@$this->gets['q'])) {
+            $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
+            $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
+        }
+        // 解析q参数
+        $q_arr = h_convert_param($this->gets['q']);
+        //var_dump($q_arr);
+        if (empty(@$q_arr['st'])) {
+            $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
+        }
+        if (empty(@$q_arr['et'])) {
+            $q_arr['et'] = mdate("%Y-%m-%d %H:%i:%s");
+        }
+        if (empty(@$this->gets['page'])) {
+            $this->gets['page'] = 0;
+        }
+        if (empty(@$this->gets['per_page'])) {
+            $this->gets['per_page'] = 20;
+        }
+        $q_arr['hphm'] = trim($q_arr['q']);
+        $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
+        $result['items'] = $query->result_array();
+        $result['total_count'] = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
+        foreach($result['items'] as $id=>$row) {
+            $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            unset($result['items'][$id]['img_ip']);
+            unset($result['items'][$id]['img_disk']);
+            unset($result['items'][$id]['img_path']);
+        }
+        header("HTTP/1.1 200 OK");
+        header('Cache-Control:max-age=0');
+        //var_dump($result);
         echo json_encode($result);
     }
 
