@@ -208,10 +208,6 @@ class Logo extends Parsing_Controller
             $this->gets['per_page'] = 20;
         }
         $q_arr['hphm'] = trim($q_arr['q']);
-        var_dump($q_arr);
-        if ($q_arr['q'] == '') {
-            var_dump('test');
-        }
         $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
         $result['items'] = $query->result_array();
         $result['total_count'] = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
