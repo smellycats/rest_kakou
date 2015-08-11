@@ -152,6 +152,106 @@ class Mlogo extends CI_Model
 	}
 
     /**
+     * 根据条件获取车辆信息
+     * 
+     * @param array $q 查询条件数组
+     * @param int   $page 页数
+     * @param int   $per_page 每页行数
+     * @param int   $sort 排序字段
+     * @param int   $order 排序方向
+     * @return object
+     */
+	public function getCarinfos($q, $page, $per_page, $sort, $order)
+	{
+		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
+		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
+		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
+		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
+
+		$this->logo_db->where('i.passtime >=', $q['st']);  //开始时间
+		$this->logo_db->where('i.passtime <=', $q['et']);  //结束时间
+		// 品牌代码
+		if (isset($q['ppdm'])) {
+			$this->logo_db->like('i.ppdm2', $q['ppdm'], 'after');
+		}
+		// 卡口地点
+		if (isset($q['place'])) {
+			$this->logo_db->where('i.cltx_place', $q['place']);
+		}
+		// 方向
+		if (isset($q['fxbh'])) {
+			$this->logo_db->where('i.cltx_dire', $q['fxbh']);
+		}
+		// 号牌颜色
+		if (isset($q['hpys'])) {
+			$this->logo_db->where('i.cltx_color', $q['hpys']);
+		}
+		if (isset($q['hphm'])) {
+			if ($q['hphm'] != 'NULL' and $q['hphm'] != '') {
+				$this->logo_db->like('i.cltx_hphm', $q['hphm'], 'after');
+			}
+		}
+
+		if ($per_page == 0){
+			$this->logo_db->select('count(*) as sum');
+			
+			return $this->logo_db->get('carinfo as i');
+		} else {
+			$this->logo_db->select('i.id');
+			$this->logo_db->select('i.passtime as jgsj');
+			$this->logo_db->select('i.cltx_hphm as hphm');
+			$this->logo_db->select('i.cltx_id');
+			$this->logo_db->select('i.cltx_lane as cdbh');
+			$this->logo_db->select('i.ppdm');
+			$this->logo_db->select('i.ppdm2');
+			$this->logo_db->select('i.kxd');
+			$this->logo_db->select('i.img_ip');
+			$this->logo_db->select('i.img_disk');
+			$this->logo_db->select('i.img_path');
+			$this->logo_db->select('m.name as clpp');
+			$this->logo_db->select('i.cltx_place as place_id');
+			$this->logo_db->select('p.place as place');
+			$this->logo_db->select('i.cltx_color as hpys_id');
+			$this->logo_db->select('s.color as hpys');
+			$this->logo_db->select('i.cllx as cllx_code');
+			$this->logo_db->select('c.name as cllx');
+			$this->logo_db->select('i.cltx_dire as fxbh_id');
+			$this->logo_db->select('d.dire as fxbh');
+			$this->logo_db->select('i.hpzl as hpzl_code');
+			$this->logo_db->select('i.csys as csys_code');
+			$this->logo_db->select('y.name as csys');
+
+			switch ($sort) {
+				case 'id':
+					$s = 'i.id';
+					break;
+				case 'ppdm':
+					$s = 'i.ppdm2';
+					break;
+				case 'jgsj':
+					$s = 'i.passtime';
+					break;
+				default:
+					$s = 'i.id';
+			}
+			switch ($order) {
+				case 'desc':
+					$o = 'desc';
+					break;
+				case 'asc':
+					$o = 'asc';
+					break;
+				default:
+					$o = 'desc';
+			}
+			$this->logo_db->order_by($s, $o);
+			
+			return $this->logo_db->get('carinfo as i', $per_page, $page * $per_page);
+		}
+	}
+    /**
      * 获取最新车辆信息
      * 
      * @param array $data 查询条件数组
