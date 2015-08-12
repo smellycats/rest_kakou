@@ -182,7 +182,7 @@ class Logo extends Parsing_Controller
     }
 
     /**
-     * get carinfos by id
+     * get carinfos
      * 获取车辆类型列表
      *
      * @return json
@@ -195,7 +195,6 @@ class Logo extends Parsing_Controller
         }
         // 解析q参数
         $q_arr = h_convert_param($this->gets['q']);
-        //var_dump($q_arr);
         if (empty(@$q_arr['st'])) {
             $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
         }
@@ -211,7 +210,7 @@ class Logo extends Parsing_Controller
         $q_arr['hphm'] = trim($q_arr['q']);
         $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
         $result['items'] = $query->result_array();
-        $result['total_count'] = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
+        $result['total_count'] = (int)$this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
         foreach($result['items'] as $id=>$row) {
             $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
             unset($result['items'][$id]['img_ip']);
@@ -220,7 +219,7 @@ class Logo extends Parsing_Controller
         }
         header("HTTP/1.1 200 OK");
         header('Cache-Control:max-age=0');
-        //var_dump($result);
+
         echo json_encode($result);
     }
 

@@ -42,6 +42,7 @@ class Index extends CI_Controller
             'place_url' => site_url('v1/logo/place'),
             'ppdm_url' => site_url('v1/logo/ppdm{/code}'),
             'carinfo_url' => site_url('v1/logo/carinfo{/id}'),
+            'carinfos_url' => site_url('v1/logo/carinfos/q={query}{&page,per_page,sort,order}'),
             'fresh_url' => site_url('v1/logo/fresh?q={query}')
         ];
 
