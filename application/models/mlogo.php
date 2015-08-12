@@ -186,7 +186,35 @@ class Mlogo extends CI_Model
 		}
 		// 号牌颜色
 		if (isset($q['hpys'])) {
-			$this->logo_db->where('i.cltx_color', $q['hpys']);
+			switch ($q['hpys']) {
+				case 'other':
+				case '其他':
+				case '1':
+					$this->logo_db->where('i.cltx_color', 1);
+					break;
+				case 'blue':
+				case '蓝':
+				case '2':
+					$this->logo_db->where('i.cltx_color', 2);
+					break;
+				case 'yellow':
+				case '黄':
+				case '3':
+					$this->logo_db->where('i.cltx_color', 3);
+					break;
+				case 'white':
+				case '白':
+				case '4':
+					$this->logo_db->where('i.cltx_color', 4);
+					break;
+				case 'black':
+				case '黑':
+				case '5':
+					$this->logo_db->where('i.cltx_color', 5);
+					break;
+				default:
+					break;
+			}
 		}
 		if (isset($q['hphm'])) {
 			if ($q['hphm'] != 'NULL' and $q['hphm'] != '') {
