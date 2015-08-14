@@ -216,9 +216,11 @@ class Mlogo extends CI_Model
 					break;
 			}
 		}
+		// 号牌号码
 		if (isset($q['hphm'])) {
-			if ($q['hphm'] != 'NULL' and $q['hphm'] != '') {
-				$this->logo_db->where('i.cltx_hphm like ', $q['hphm'] . '%');
+			$hphm = strtoupper($q['hphm']);
+			if ($hphm != 'NULL' and $q['hphm'] != '') {
+				$this->logo_db->where('i.cltx_hphm like ', $hphm . '%');
 			}
 		}
 
