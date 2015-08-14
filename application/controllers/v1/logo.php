@@ -202,7 +202,7 @@ class Logo extends Parsing_Controller
             $q_arr['et'] = mdate("%Y-%m-%d %H:%i:%s");
         }
         if (empty(@$this->gets['page'])) {
-            $this->gets['page'] = 0;
+            $this->gets['page'] = 1;
         }
         if (empty(@$this->gets['per_page'])) {
             $this->gets['per_page'] = 20;
