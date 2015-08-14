@@ -207,7 +207,7 @@ class Logo extends Parsing_Controller
         if (empty(@$this->gets['per_page'])) {
             $this->gets['per_page'] = 20;
         }
-        $q_arr['hphm'] = trim($q_arr['q']);
+        $q_arr['hphm'] = trim($q_arr['q']);  //删除两边空格
         $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
         $result['items'] = $query->result_array();
         $result['total_count'] = (int)$this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
