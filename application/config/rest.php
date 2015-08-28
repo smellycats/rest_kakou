@@ -173,7 +173,7 @@ $config['rest_valid_logins'] = array('admin' => '12345');
 |	 restrict certain methods to IPs in your whitelist
 |
 */
-$config['rest_ip_whitelist_enabled'] = false;
+$config['rest_ip_whitelist_enabled'] = true;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,7 +188,7 @@ $config['rest_ip_whitelist_enabled'] = false;
 | 127.0.0.1 and 0.0.0.0 are allowed by default.
 |
 */
-$config['rest_ip_whitelist'] = '';
+$config['rest_ip_whitelist'] = '192.168.1.15';
 
 /*
 |--------------------------------------------------------------------------
@@ -263,7 +263,7 @@ $config['rest_keys_table'] = 'keys';
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_keys'] = FALSE;
+$config['rest_enable_keys'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -428,7 +428,7 @@ $config['rest_limits_table'] = 'limits';
  
 | See application/controllers/api/example.php for examples. 
 */
-$config['rest_enable_limits'] = FALSE;
+$config['rest_enable_limits'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
