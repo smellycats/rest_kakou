@@ -30,8 +30,13 @@ class Logo extends Parsing_Controller
         header('Content-Type: application/json');
 
         $this->imgip = array('1' => '127.0.0.1', '2' => '127.0.0.1');
+        $this->methods['hpys_get']['limit'] = 5000; //50 requests per hour per user/key
     }
 
+    function test_get()
+    {
+        echo json_encode(array('test'=> '123'));
+    }
     /**
      * get hpys
      * 获取号牌颜色列表
@@ -207,12 +212,66 @@ class Logo extends Parsing_Controller
         if (empty(@$this->gets['per_page'])) {
             $this->gets['per_page'] = 20;
         }
-        $q_arr['hphm'] = trim($q_arr['q']);
+        $q_arr['hphm'] = trim($q_arr['q']);  //删除两边空格
         $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
         $result['items'] = $query->result_array();
         $result['total_count'] = (int)$this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
         foreach($result['items'] as $id=>$row) {
             $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            unset($result['items'][$id]['img_ip']);
+            unset($result['items'][$id]['img_disk']);
+            unset($result['items'][$id]['img_path']);
+        }
+        header("HTTP/1.1 200 OK");
+        header('Cache-Control:max-age=0');
+
+        echo json_encode($result);
+    }
+
+
+    /**
+     * get carinfos
+     * 获取车辆类型列表
+     *
+     * @return json
+     */
+    function carinfos2_get()
+    {
+        if (empty(@$this->gets['q'])) {
+            $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
+            $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
+        }
+        // 解析q参数
+        $q_arr = h_convert_param($this->gets['q']);
+        if (empty(@$q_arr['st'])) {
+            $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
+        }
+        if (empty(@$q_arr['et'])) {
+            $q_arr['et'] = mdate("%Y-%m-%d %H:%i:%s");
+        }
+        if (empty(@$this->gets['page'])) {
+            $this->gets['page'] = 1;
+        }
+        if (empty(@$this->gets['per_page'])) {
+            $this->gets['per_page'] = 20;
+        }
+        $q_arr['hphm'] = trim($q_arr['q']);  //删除两边空格
+        $query = $this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], @$this->gets['per_page'], @$this->gets['sort'], @$this->gets['order']);
+        $result['items'] = $query->result_array();
+        $result['total_count'] = (int)$this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
+        $img_array = [
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/1.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/2.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/3.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/4.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/5.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/6.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/7.jpg',
+            'http://localhost/rest_kakou/SpreadData/ImageFile/20150611/00/交警支队卡口/进城/8.jpg'
+        ];
+        foreach($result['items'] as $id=>$row) {
+            $result['items'][$id]['imgurl'] = $img_array[array_rand($img_array,1)];
+            #$result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
