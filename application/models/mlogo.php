@@ -92,7 +92,9 @@ class Mlogo extends CI_Model
 	public function getPpdm()
 	{	
 		$this->logo_db->select('*');
-		return $this->logo_db->get('ppdm');
+		$this->logo_db->where('banned', 0);
+		$this->logo_db->where('id <', 1000);
+		return $this->logo_db->get('ppdm_list');
 	}
 
     /**
@@ -104,9 +106,9 @@ class Mlogo extends CI_Model
 	public function getPpdmByCode($code)
 	{
 		$this->logo_db->select('*');
-		$this->logo_db->where('clpp1', $code);
+		$this->logo_db->where('ppdm', $code);
 		$this->logo_db->where('banned', 0);
-		return $this->logo_db->get('clpp2_dict');
+		return $this->logo_db->get('ppdm_list');
 	}
 
     /**
