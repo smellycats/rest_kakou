@@ -2,6 +2,7 @@
 
 class Mcltx extends CI_Model
 {
+	private $logo_db;
     /**
      * Construct a mcgs instance
      *
@@ -10,45 +11,9 @@ class Mcltx extends CI_Model
 	{
 		parent::__construct();
 
+		$this->orc_db = $this->load->database('orc_db', TRUE);
 	}
 	
-    /**
-     * 根据条件查询车辆信息
-     * 
-     * @param array $data 查询数组
-     * @return object
-     */
-	public function getVehicle($data)
-	{	
-		$this->cgs_db->select('*');
-		$this->cgs_db->from('vehicle_gd');
-		$this->cgs_db->where('hphm', $data['hphm']);
-		switch (@$data['hpys']) {
-			case 'blue':
-			case '蓝':
-			case '2':
-				$this->cgs_db->where_in('hpzl', ['02', '08']);
-				break;
-			case 'yellow':
-			case '黄':
-			case '3':
-				$this->cgs_db->where_in('hpzl', ['01', '07', '13', '14', '15', '16', '17']);
-				break;
-			case 'white':
-			case '白':
-			case '4':
-				$this->cgs_db->where_in('hpzl', ['20', '21', '22', '24', '32']);
-				break;
-			case 'black':
-			case '黑':
-			case '5':
-				$this->cgs_db->where_in('hpzl', ['03', '04', '05', '06', '09', '10', '11', '12']);
-				break;
-			default:
-				break;
-		}
-		return $this->cgs_db->get();
-	}
 
 	//根据条件获取车辆信息
 	public function getCltx($data, $limit = 20)
@@ -65,6 +30,43 @@ class Mcltx extends CI_Model
 		return $this->ora_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss')AS passtime FROM cltx WHERE ROWNUM <=$limit ORDER BY id DESC" );
 
 	}
+
+    /**
+     * 根据id获取车辆信息
+     * 
+     * @param int $id cltx表ID
+     * @return object
+     */
+	public function getCltxById($id)
+	{
+		return $this->orc_db->query("SELECT * FROM cltx WHERE id = $id");
+	}
+
+    /**
+     * 获取cltx表最大ID
+     * 
+     * @return object
+     */
+	public function getCltxMaxId()
+	{
+		return $this->orc_db->query("SELECT max(id) as maxid FROM cltx");
+	}
+
+    /**
+     * 获取车流量
+     * 
+     * @return object
+     */
+	public function getCltxNum($data)
+	{
+		$sqlstr = '';
+		// 最小速度
+		if (isset($data['fxbh'])) {
+			$sqlstr = $sqlstr . " AND fxbh = '$data[fxbh]'";
+		}
+		return $this->orc_db->query("SELECT count(*) AS sum FROM cltx WHERE jgsj >= to_date('$data[st]','yyyy-mm-dd hh24:mi:ss') AND jgsj < to_date('$data[et]','yyyy-mm-dd hh24:mi:ss') AND kkdd = '$data[kkdd]'" . $sqlstr);
+	}
+
 }
 ?>
 
