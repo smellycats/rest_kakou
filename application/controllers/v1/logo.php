@@ -48,7 +48,7 @@ class Logo extends Parsing_Controller
         $query = $this->Mlogo->getHpys();
         $result = array();
         foreach($query->result() as $id=>$row) {
-            $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->color);
+            $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
         header("HTTP/1.1 200 OK");
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
@@ -116,7 +116,7 @@ class Logo extends Parsing_Controller
         $query = $this->Mlogo->getFxbh();
         $result = array();
         foreach($query->result() as $id=>$row) {
-            $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->name);
+            $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
         header("HTTP/1.1 200 OK");
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
@@ -129,6 +129,23 @@ class Logo extends Parsing_Controller
      * @return json
      */
     function place_get()
+    {
+        $query = $this->Mlogo->getPlace();
+        $result = array();
+        foreach($query->result() as $id=>$row) {
+            $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->place, 'config_id'=>(int)$row->config_id, 'kkbh'=>$row->kkbh);
+        }
+        header("HTTP/1.1 200 OK");
+        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
+    }
+
+    /**
+     * get place
+     * 获取车辆类型列表
+     *
+     * @return json
+     */
+    function kkdd_get()
     {
         $query = $this->Mlogo->getPlace();
         $result = array();
