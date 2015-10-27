@@ -8,6 +8,7 @@ db = MySQLDatabase('vehicle_logo', user='root', passwd='root')
 
 
 class BaseModel(Model):
+
     class Meta:
         database = db
 
@@ -18,6 +19,7 @@ class BaseModel(Model):
             return cls.get(*query, **kwargs)
         except DoesNotExist:
             return None
+
 
 class Carinfo(BaseModel):
     id = IntegerField(primary_key=True)
@@ -38,11 +40,12 @@ class Carinfo(BaseModel):
     kxd = IntegerField(default=0)
     ppdm = CharField(default='999')
     ppdm2 = CharField(default='999999')
-    clpp= CharField(default='其他')
+    clpp = CharField(default='其他')
     matchflag = IntegerField(default=1)
     confirmflag = IntegerField(default=1)
     clppflag = IntegerField(default=1)
     smsflag = IntegerField(default=1)
+
 
 class Carinfo2(BaseModel):
     id = IntegerField(primary_key=True)
@@ -63,7 +66,7 @@ class Carinfo2(BaseModel):
     kxd = IntegerField(default=0)
     ppdm = CharField(default='999')
     ppdm2 = CharField(default='999999')
-    clpp= CharField(default='其他')
+    clpp = CharField(default='其他')
     matchflag = IntegerField(default=1)
     confirmflag = IntegerField(default=1)
     clppflag = IntegerField(default=1)
@@ -90,4 +93,3 @@ if __name__ == '__main__':
                        ppdm=s.ppdm,
                        ppdm2=s.ppdm2,
                        clpp=s.clpp).execute()
-
