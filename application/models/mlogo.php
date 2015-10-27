@@ -22,7 +22,7 @@ class Mlogo extends CI_Model
 	public function getHpys()
 	{	
 		$this->logo_db->select('*');
-		return $this->logo_db->get('platecolor');
+		return $this->logo_db->get('hpys');
 	}
 
     /**
@@ -67,8 +67,8 @@ class Mlogo extends CI_Model
      */
 	public function getFxbh()
 	{	
-		$this->logo_db->select('id, dire as name');
-		return $this->logo_db->get('directions');
+		$this->logo_db->select('*');
+		return $this->logo_db->get('fxbh');
 	}
 
     /**
