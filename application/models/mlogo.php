@@ -134,11 +134,13 @@ class Mlogo extends CI_Model
 		$this->logo_db->select('i.cltx_place as place_id');
 		$this->logo_db->select('p.place as place');
 		$this->logo_db->select('i.cltx_color as hpys_id');
-		$this->logo_db->select('s.color as hpys');
+		$this->logo_db->select('s.name as hpys');
+		$this->logo_db->select('s.code as hpys_code');
 		$this->logo_db->select('i.cllx as cllx_code');
 		$this->logo_db->select('c.name as cllx');
 		$this->logo_db->select('i.cltx_dire as fxbh_id');
-		$this->logo_db->select('d.dire as fxbh');
+		$this->logo_db->select('d.name as fxbh');
+		$this->logo_db->select('d.code as fxbh_code');
 		$this->logo_db->select('i.hpzl as hpzl_code');
 		$this->logo_db->select('i.csys as csys_code');
 		$this->logo_db->select('y.name as csys');
@@ -146,8 +148,8 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 		$this->logo_db->where('i.id', $id);
 		return $this->logo_db->get('carinfo as i');
@@ -168,8 +170,8 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 
 		$this->logo_db->where('i.passtime >=', $q['st']);  //开始时间
@@ -191,26 +193,31 @@ class Mlogo extends CI_Model
 			switch ($q['hpys']) {
 				case 'other':
 				case '其他':
+				case 'QT':
 				case '1':
 					$this->logo_db->where('i.cltx_color', 1);
 					break;
 				case 'blue':
 				case '蓝':
+				case 'BU':
 				case '2':
 					$this->logo_db->where('i.cltx_color', 2);
 					break;
 				case 'yellow':
 				case '黄':
+				case 'YL':
 				case '3':
 					$this->logo_db->where('i.cltx_color', 3);
 					break;
 				case 'white':
 				case '白':
+				case 'WT':
 				case '4':
 					$this->logo_db->where('i.cltx_color', 4);
 					break;
 				case 'black':
 				case '黑':
+				case 'BK':
 				case '5':
 					$this->logo_db->where('i.cltx_color', 5);
 					break;
@@ -246,11 +253,13 @@ class Mlogo extends CI_Model
 			$this->logo_db->select('i.cltx_place as place_id');
 			$this->logo_db->select('p.place as place');
 			$this->logo_db->select('i.cltx_color as hpys_id');
-			$this->logo_db->select('s.color as hpys');
+			$this->logo_db->select('s.name as hpys');
+			$this->logo_db->select('s.code as hpys_code');
 			$this->logo_db->select('i.cllx as cllx_code');
 			$this->logo_db->select('c.name as cllx');
 			$this->logo_db->select('i.cltx_dire as fxbh_id');
-			$this->logo_db->select('d.dire as fxbh');
+			$this->logo_db->select('d.name as fxbh');
+			$this->logo_db->select('d.code as fxbh_code');
 			$this->logo_db->select('i.hpzl as hpzl_code');
 			$this->logo_db->select('i.csys as csys_code');
 			$this->logo_db->select('y.name as csys');
@@ -308,11 +317,13 @@ class Mlogo extends CI_Model
 		$this->logo_db->select('i.cltx_place as place_id');
 		$this->logo_db->select('p.place as place');
 		$this->logo_db->select('i.cltx_color as hpys_id');
-		$this->logo_db->select('s.color as hpys');
+		$this->logo_db->select('s.name as hpys');
+		$this->logo_db->select('s.code as hpys_code');
 		$this->logo_db->select('i.cllx as cllx_code');
 		$this->logo_db->select('c.name as cllx');
 		$this->logo_db->select('i.cltx_dire as fxbh_id');
-		$this->logo_db->select('d.dire as fxbh');
+		$this->logo_db->select('d.name as fxbh');
+		$this->logo_db->select('d.code as fxbh_code');
 		$this->logo_db->select('i.hpzl as hpzl_code');
 		$this->logo_db->select('i.csys as csys_code');
 		$this->logo_db->select('y.name as csys');
@@ -320,8 +331,8 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 		if (isset($data['id'])) {
 			$this->logo_db->where('i.id >', $data['id']);

@@ -29,8 +29,12 @@ class Logo extends Parsing_Controller
         header('Cache-Control: public, max-age=60, s-maxage=60');
         header('Content-Type: application/json');
 
-        $this->imgip = array('1' => '127.0.0.1', '2' => '127.0.0.1');
         $this->methods['hpys_get']['limit'] = 5000; //50 requests per hour per user/key
+
+        $this->imgip = array(
+            '1' => '127.0.0.1',
+            '2' => '127.0.0.1'
+        );
     }
 
     function test_get()
@@ -169,14 +173,14 @@ class Logo extends Parsing_Controller
             $query = $this->Mlogo->getPpdm();
             $result = array();
             foreach($query->result() as $id=>$row) {
-                $result[$id] = array('id' => (int)$row->id, 'code' => $row->code, 'name' => $row->name);
+                $result[$id] = array('id' => (int)$row->id, 'code' => $row->ppdm, 'name' => $row->name);
             }
             echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
         } else {
             $query = $this->Mlogo->getPpdmByCode($code);
             $result = array();
             foreach($query->result() as $id=>$row) {
-                $result[$id] = array('code' => $row->clpp2, 'name' => $row->name2);
+                $result[$id] = array('code' => $row->ppdm2, 'name' => $row->name);
             }
             header("HTTP/1.1 200 OK");
             echo json_encode(array('total_count' => $query->num_rows(), 'code' => $code, 'items' => $result));
@@ -194,7 +198,14 @@ class Logo extends Parsing_Controller
         $id = (int)$this->uri->segment(4);
         $query = $this->Mlogo->getCarinfoById($id);
         $result = $query->row_array();
-        $result['imgurl'] = 'http://' . $this->imgip[$result['img_ip']] . '/SpreadData' . $result['img_disk']. '/' . str_replace("\\", '/', $result['img_path']);
+        $result['imgurl'] = 'http://'
+                          . $this->imgip[$result['img_ip']]
+                          . '/SpreadData'
+                          . $result['img_disk']
+                          . '/'
+                          . str_replace("\\", '/', $result['img_path']);
+        $result['kkdd_id'] = (int)$result['place_id'];
+        $result['kkdd'] = $result['place'];
         unset($result['img_ip']);
         unset($result['img_disk']);
         unset($result['img_path']);
@@ -234,7 +245,14 @@ class Logo extends Parsing_Controller
         $result['items'] = $query->result_array();
         $result['total_count'] = (int)$this->Mlogo->getCarinfos($q_arr, @$this->gets['page'], 0, @$this->gets['sort'], @$this->gets['order'])->row()->sum;
         foreach($result['items'] as $id=>$row) {
-            $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            $result['items'][$id]['imgurl'] = 'http://'
+                                            . @$this->imgip[$row['img_ip']]
+                                            . '/SpreadData'
+                                            . $row['img_disk']
+                                            . '/'
+                                            . str_replace('\\', '/', $row['img_path']);
+            $result[$id]['kkdd_id'] = (int)$result[$id]['place_id'];
+            $result[$id]['kkdd'] = $result[$id]['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
@@ -339,7 +357,14 @@ class Logo extends Parsing_Controller
         $result['items'] = $query->result_array();
         $result['total_count'] = $query->num_rows();
         foreach($result['items'] as $id=>$row) {
-            $result['items'][$id]['imgurl'] = 'http://' . @$this->imgip[$row['img_ip']] . '/SpreadData' . $row['img_disk'] . '/' . str_replace('\\', '/', $row['img_path']);
+            $result['items'][$id]['imgurl'] = 'http://'
+                                            . @$this->imgip[$row['img_ip']]
+                                            . '/SpreadData'
+                                            . $row['img_disk']
+                                            . '/'
+                                            . str_replace('\\', '/', $row['img_path']);
+            $result[$id]['kkdd_id'] = (int)$result[$id]['place_id'];
+            $result[$id]['kkdd'] = $result[$id]['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
