@@ -2,7 +2,7 @@
 
 class Mcltx extends CI_Model
 {
-	private $logo_db;
+	private $orc_db;
     /**
      * Construct a mcgs instance
      *
@@ -16,19 +16,24 @@ class Mcltx extends CI_Model
 	
 
 	//根据条件获取车辆信息
-	public function getCltx($data, $limit = 20)
+	public function getCltx($data)
+	{
+		return $this->orc_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss') AS passtime FROM cltx t WHERE id > $data[id] AND id <= $data[last_id] ORDER BY id" );
+	}
+
+	//根据条件获取车辆信息
+	public function getCltx2($data, $limit = 20)
 	{
 		$maxid = $data[id] + $limit;
 
-		return $this->ora_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss')AS passtime FROM cltx WHERE id>=$data[id] AND id<$maxid" );
+		return $this->orc_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss') AS passtime FROM cltx WHERE id >= $data[id] AND id < $maxid" );
 
 	}
 
 	//根据条件获取车辆信息
 	public function getLastCltx($limit = 20)
 	{
-		return $this->ora_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss')AS passtime FROM cltx WHERE ROWNUM <=$limit ORDER BY id DESC" );
-
+		return $this->orc_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss') AS passtime FROM cltx WHERE ROWNUM <= $limit ORDER BY id DESC" );
 	}
 
     /**
@@ -39,8 +44,9 @@ class Mcltx extends CI_Model
      */
 	public function getCltxById($id)
 	{
-		return $this->orc_db->query("SELECT * FROM cltx WHERE id = $id");
+		return $this->orc_db->query("SELECT t.*, to_char(jgsj, 'yyyy-mm-dd hh24:mi:ss') AS passtime FROM cltx t WHERE id = $id");
 	}
+
 
     /**
      * 获取cltx表最大ID

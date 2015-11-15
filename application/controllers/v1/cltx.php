@@ -25,6 +25,7 @@ class Cltx extends Parsing_Controller
 
         //header('Cache-Control: public, max-age=60, s-maxage=60');
         header('Content-Type: application/json');
+        header("HTTP/1.1 200 OK");
     }
     
     /**
@@ -74,16 +75,51 @@ class Cltx extends Parsing_Controller
         $result = array();
         $result['id']   = (int)$row['ID'];
         $result['hphm'] = $row['HPHM'];
-        $result['jgsj'] = $row['JGSJ'];
+        $result['jgsj'] = $row['PASSTIME'];
         $result['hpys'] = $row['HPYS'];
-        $result['kkdd'] = $row['WZDD'];
+        $result['wzdd'] = $row['WZDD'];
         $result['fxbh'] = $row['FXBH'];
-        $result['cdbh'] = $row['CDBH'];
-        $result['imgurl'] = h_create_img_url($row);
+        $result['cdbh'] = (int)$row['CDBH'];
+        $result['kkbh'] = $row['KKBH'];
+        $result['clbj'] = $row['CLBJ'];
+        $result['imgurl'] = "http://10.47.187.166/$row[QMTP]/"
+                          . str_replace('\\', '/', $row['TJTP']);
 
-        header("HTTP/1.1 200 OK");
-        echo json_encode($result);
+        $json = json_encode($result);
+        echo str_replace("\/", "/", $json);
     }
+
+    /**
+     * 根据id获取车辆信息
+     * 
+     * @return json
+     */
+    function cltxs_get()
+    {
+        $data['id'] = $this->uri->segment(4);
+        $data['last_id'] = $this->uri->segment(5);
+        
+        $query = $this->Mcltx->getCltx($data);
+        $results = $query->result_array();
+        $items = [];
+        foreach($results as $id => $row) {
+            $items[$id]['id']   = (int)$row['ID'];
+            $items[$id]['hphm'] = $row['HPHM'];
+            $items[$id]['jgsj'] = $row['PASSTIME'];
+            $items[$id]['hpys'] = $row['HPYS'];
+            $items[$id]['wzdd'] = $row['WZDD'];
+            $items[$id]['fxbh'] = $row['FXBH'];
+            $items[$id]['cdbh'] = (int)$row['CDBH'];
+            $items[$id]['kkbh'] = $row['KKBH'];
+            $items[$id]['clbj'] = $row['CLBJ'];
+            $items[$id]['imgurl'] = "http://10.47.187.166/$row[QMTP]/"
+                                  . str_replace('\\', '/', $row['TJTP']);
+        }
+        $json = json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
+
+        echo str_replace("\/", "/", $json);
+    }
+
 
     /**
      * 获取cltx表最大ID
@@ -93,26 +129,8 @@ class Cltx extends Parsing_Controller
     function cltxmaxid_get()
     {
         $query = $this->Mcltx->getCltxMaxId();
-        $result = array();
-        $result['maxid'] = (int)$query->row()->MAXID;
+        $result = array('maxid' => (int)$query->row()->MAXID);
 
-        header("HTTP/1.1 200 OK");
-        echo json_encode($result);
-    }
-
-
-    /**
-     * 根据条件获取车流量
-     * 
-     * @return json
-     */
-    function cltxmaxid_get()
-    {
-        $query = $this->Mcltx->getCltxMaxId();
-        $result = array();
-        $result['maxid'] = (int)$query->row()->MAXID;
-
-        header("HTTP/1.1 200 OK");
         echo json_encode($result);
     }
 
@@ -121,7 +139,7 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function cltxmaxid_get()
+    function cltxmaxid2_get()
     {
         $data = $this->input->get(NULL, true);
 
