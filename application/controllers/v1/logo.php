@@ -204,6 +204,10 @@ class Logo extends Parsing_Controller
                           . $result['img_disk']
                           . '/'
                           . str_replace("\\", '/', $result['img_path']);
+        $result['thumb_url'] = 'http://'
+                             . $this->imgip[$result['img_ip']]
+                             . '/rest_kakou/index.php/v1/img/thumb?id='
+                             . $result['id'];
         $result['kkdd_id'] = (int)$result['place_id'];
         $result['kkdd'] = $result['place'];
         unset($result['img_ip']);
@@ -251,8 +255,12 @@ class Logo extends Parsing_Controller
                                             . $row['img_disk']
                                             . '/'
                                             . str_replace('\\', '/', $row['img_path']);
-            $result[$id]['kkdd_id'] = (int)$result[$id]['place_id'];
-            $result[$id]['kkdd'] = $result[$id]['place'];
+            $result['items'][$id]['thumb_url'] = 'http://'
+                                               . @$this->imgip[$row['img_ip']]
+                                               . '/rest_kakou/index.php/v1/img/thumb?id='
+                                               . $row['id'];
+            $result[$id]['kkdd_id'] = (int)$row['place_id'];
+            $result[$id]['kkdd'] = $row['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
@@ -363,8 +371,12 @@ class Logo extends Parsing_Controller
                                             . $row['img_disk']
                                             . '/'
                                             . str_replace('\\', '/', $row['img_path']);
-            $result[$id]['kkdd_id'] = (int)$result[$id]['place_id'];
-            $result[$id]['kkdd'] = $result[$id]['place'];
+            $result['items'][$id]['thumb_url'] = 'http://'
+                                               . @$this->imgip[$row['img_ip']]
+                                               . '/rest_kakou/index.php/v1/img/thumb?id='
+                                               . $row['id'];
+            $result[$id]['kkdd_id'] = (int)$row['place_id'];
+            $result[$id]['kkdd'] = $row['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
@@ -435,4 +447,5 @@ class Logo extends Parsing_Controller
         header('Cache-Control:max-age=0');
         echo json_encode($result);
     }
+
 }
