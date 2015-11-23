@@ -111,6 +111,7 @@ class Cltx extends Parsing_Controller
             $items[$id]['fxbh'] = $row['FXBH'];
             $items[$id]['cdbh'] = (int)$row['CDBH'];
             $items[$id]['kkbh'] = $row['KKBH'];
+            $items[$id]['fxbh'] = $row['FXBH'];
             $items[$id]['clbj'] = $row['CLBJ'];
             $items[$id]['imgurl'] = "http://10.47.187.166/$row[QMTP]/"
                                   . str_replace('\\', '/', $row['TJTP']);
