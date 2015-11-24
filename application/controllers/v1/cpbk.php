@@ -28,7 +28,7 @@ class Cpbk extends Parsing_Controller
         $this->load->helper('date');
 
         #header('Cache-Control: public, max-age=60, s-maxage=60');
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
     }
 
     function test_get()
@@ -63,7 +63,6 @@ class Cpbk extends Parsing_Controller
                     unset($result['img_ip']);
                     unset($result['img_disk']);
                     unset($result['img_path']);
-                    header('Content-Type: application/json');
                     header('HTTP/1.1 200 OK');
                     echo json_encode($result);
                     return;
