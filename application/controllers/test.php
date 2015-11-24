@@ -14,22 +14,36 @@
 */
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
-require APPPATH.'/libraries/REST_Controller.php';
+#require APPPATH.'/libraries/REST_Controller.php';
 
-class Test extends REST_Controller
+class Test extends CI_Controller
 {
 	function __construct()
     {
         // Construct our parent class
         parent::__construct();
         
-        $this->load->model('Mcgs');
+        #$this->load->model('Mcgs');
         // Configure limits on our controller methods. Ensure
         // you have created the 'limits' table and enabled 'limits'
         // within application/config/rest.php
-        $this->methods['user_get']['limit'] = 500; //500 requests per hour per user/key
-        $this->methods['user_post']['limit'] = 100; //100 requests per hour per user/key
-        $this->methods['user_delete']['limit'] = 50; //50 requests per hour per user/key
+        #$this->methods['user_get']['limit'] = 500; //500 requests per hour per user/key
+        #$this->methods['user_post']['limit'] = 100; //100 requests per hour per user/key
+        #$this->methods['user_delete']['limit'] = 50; //50 requests per hour per user/key
+    }
+
+    function index()
+    {
+        echo 'test';
+    }
+
+    function man()
+    {
+        header('Content-Type: application/json');
+        header('Cache-Control: no-cache');
+        header('Pragma: no-cache');
+        //header("HTTP/1.1 200 OK");
+        echo json_encode([array('name' =>'jack', 'age'=>10),array('name' =>'ken', 'age'=>21)]);
     }
     
     function vehicles_get()
@@ -98,4 +112,32 @@ class Test extends REST_Controller
 	{
 		var_dump($this->put('foo'));
 	}
+
+    public function test()
+    {
+        $this->load->driver('cache', ['adapter'=>'redis']);
+        #$this->cache->redis->save('foo', 'bar', 120);
+        //$data = array('hpys'=>'蓝', '车辆类型'=>'大型');
+        #echo json_encode($data);
+        $this->cache->redis->save('粤L12345,01', 1, 120);
+        $this->cache->redis->save('粤L12345,03', 0, 120);
+    }
+
+    public function redis_get()
+    {
+        $this->load->driver('cache', ['adapter'=>'redis']);
+        $data = $this->cache->redis->get('粤L12345,01');
+        var_dump($data);
+    }
+
+    public function test2()
+    {
+        $email = 'yuxiaoxiao!example.com';
+        $domain = strstr($email, '@');
+        var_dump($domain);
+        echo substr($domain, 1);
+        //echo $domain; // 打印 @example.com
+        $user = strstr($email, '@', true); // 从 PHP 5.3.0 起
+        //echo $user; // 打印 yuxiaoxiao 
+    }
 }

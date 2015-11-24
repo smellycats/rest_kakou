@@ -40,6 +40,7 @@ class Index extends CI_Controller
             'cllx_url' => site_url('v1/logo/cllx'),
             'fxbh_url' => site_url('v1/logo/fxbh'),
             'place_url' => site_url('v1/logo/place'),
+            'kkdd_url' => site_url('v1/logo/kkdd'),
             'ppdm_url' => site_url('v1/logo/ppdm{/code}'),
             'carinfo_url' => site_url('v1/logo/carinfo{/id}'),
             'carinfos_url' => site_url('v1/logo/carinfos/q={query}{&page,per_page,sort,order}'),

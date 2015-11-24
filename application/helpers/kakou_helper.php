@@ -113,7 +113,7 @@ if ( ! function_exists('h_convert_param'))
  * @return string
  */
 
- if ( ! function_exists('h_create_img_url'))
+if ( ! function_exists('h_create_img_url'))
 {
     function h_create_img_url($carinfo, $wm_open=FALSE)
     {   

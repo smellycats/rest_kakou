@@ -12,6 +12,23 @@ class Mlogo extends CI_Model
 		parent::__construct();
 
 		$this->logo_db = $this->load->database('logo_db', TRUE);
+
+        $this->place_id = array(
+            '441323001' => 14,
+            '441323002' => 7,
+            '441323003' => 2,
+            '441323004' => 6,
+            '441323005' => 5,
+            '441323006' => 8,
+            '441323007' => 4,
+            '441323008' => 12,
+            '441323009' => 3,
+            '441323010' => 9,
+            '441323011' => 10,
+            '441323012' => 11,
+            '441323013' => 13,  #广惠高速入口白花卡哨
+            '441323014' => 15   #大岭镇(潮莞高速路口)往惠州
+        );
 	}
 	
     /**
@@ -22,7 +39,7 @@ class Mlogo extends CI_Model
 	public function getHpys()
 	{	
 		$this->logo_db->select('*');
-		return $this->logo_db->get('platecolor');
+		return $this->logo_db->get('hpys');
 	}
 
     /**
@@ -33,8 +50,9 @@ class Mlogo extends CI_Model
 	public function getHpzl()
 	{	
 		$this->logo_db->select('hpzl.*');
-		$this->logo_db->select('platecolor.color');
-		$this->logo_db->join('platecolor', 'platecolor.id = hpzl.color_id');
+		$this->logo_db->select('hpys.name as hpys');
+		$this->logo_db->select('hpys.code as hpys_code');
+		$this->logo_db->join('hpys', 'hpys.code = hpzl.hpys_code');
 		return $this->logo_db->get('hpzl');
 	}
 
@@ -67,8 +85,8 @@ class Mlogo extends CI_Model
      */
 	public function getFxbh()
 	{	
-		$this->logo_db->select('id, dire as name');
-		return $this->logo_db->get('directions');
+		$this->logo_db->select('*');
+		return $this->logo_db->get('fxbh');
 	}
 
     /**
@@ -92,7 +110,9 @@ class Mlogo extends CI_Model
 	public function getPpdm()
 	{	
 		$this->logo_db->select('*');
-		return $this->logo_db->get('ppdm');
+		$this->logo_db->where('banned', 0);
+		$this->logo_db->where('id <', 1000);
+		return $this->logo_db->get('ppdm_list');
 	}
 
     /**
@@ -104,9 +124,9 @@ class Mlogo extends CI_Model
 	public function getPpdmByCode($code)
 	{
 		$this->logo_db->select('*');
-		$this->logo_db->where('clpp1', $code);
+		$this->logo_db->where('ppdm', $code);
 		$this->logo_db->where('banned', 0);
-		return $this->logo_db->get('clpp2_dict');
+		return $this->logo_db->get('ppdm_list');
 	}
 
     /**
@@ -129,14 +149,17 @@ class Mlogo extends CI_Model
 		$this->logo_db->select('i.img_disk');
 		$this->logo_db->select('i.img_path');
 		$this->logo_db->select('m.name as clpp');
+		$this->logo_db->select('i.clpp as clpp_dtl');
 		$this->logo_db->select('i.cltx_place as place_id');
 		$this->logo_db->select('p.place as place');
 		$this->logo_db->select('i.cltx_color as hpys_id');
-		$this->logo_db->select('s.color as hpys');
+		$this->logo_db->select('s.name as hpys');
+		$this->logo_db->select('s.code as hpys_code');
 		$this->logo_db->select('i.cllx as cllx_code');
 		$this->logo_db->select('c.name as cllx');
 		$this->logo_db->select('i.cltx_dire as fxbh_id');
-		$this->logo_db->select('d.dire as fxbh');
+		$this->logo_db->select('d.name as fxbh');
+		$this->logo_db->select('d.code as fxbh_code');
 		$this->logo_db->select('i.hpzl as hpzl_code');
 		$this->logo_db->select('i.csys as csys_code');
 		$this->logo_db->select('y.name as csys');
@@ -144,8 +167,8 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 		$this->logo_db->where('i.id', $id);
 		return $this->logo_db->get('carinfo as i');
@@ -166,8 +189,8 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 
 		$this->logo_db->where('i.passtime >=', $q['st']);  //开始时间
@@ -176,39 +199,91 @@ class Mlogo extends CI_Model
 		if (isset($q['ppdm'])) {
 			$this->logo_db->like('i.ppdm2', $q['ppdm'], 'after');
 		}
-		// 卡口地点
-		if (isset($q['place'])) {
-			$this->logo_db->where('i.cltx_place', $q['place']);
+		if (isset($data['kkdd'])) {
+			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
+		} elseif (isset($data['place'])) {
+			$this->logo_db->where('i.cltx_place', $data['place']);
 		}
 		// 方向
 		if (isset($q['fxbh'])) {
-			$this->logo_db->where('i.cltx_dire', $q['fxbh']);
+			switch ($data['fxbh']) {
+				case '1':
+				case 1:
+				case 'QT':  
+				    // 其他
+					$fxbh = 1;
+					break;
+				case '2':
+				case 2:
+				case 'IN':  
+				    //进城
+					$fxbh = 2;
+					break;
+				case '3':
+				case 3:
+				case 'OT':
+					//出城
+					$fxbh = 3;
+					break;
+				case '4':
+				case 4:
+				case 'EW':
+					//东往西
+					$fxbh = 4;
+					break;
+				case '5':
+				case 5:
+				case 'SN':
+					//南往北
+					$fxbh = 5;
+					break;
+				case '6':
+				case 6:
+				case 'WE':
+				    //西往东
+					$fxbh = 6;
+					break;
+				case '7':
+				case 7:
+				case 'NS':
+					//北往南
+					$fxbh = 7;
+					break;
+				default:
+					$fxbh = 1;
+			}
+			$this->logo_db->where('i.cltx_dire', $fxbh);
 		}
 		// 号牌颜色
 		if (isset($q['hpys'])) {
 			switch ($q['hpys']) {
 				case 'other':
 				case '其他':
+				case 'QT':
 				case '1':
 					$this->logo_db->where('i.cltx_color', 1);
 					break;
 				case 'blue':
 				case '蓝':
+				case 'BU':
 				case '2':
 					$this->logo_db->where('i.cltx_color', 2);
 					break;
 				case 'yellow':
 				case '黄':
+				case 'YL':
 				case '3':
 					$this->logo_db->where('i.cltx_color', 3);
 					break;
 				case 'white':
 				case '白':
+				case 'WT':
 				case '4':
 					$this->logo_db->where('i.cltx_color', 4);
 					break;
 				case 'black':
 				case '黑':
+				case 'BK':
 				case '5':
 					$this->logo_db->where('i.cltx_color', 5);
 					break;
@@ -241,14 +316,17 @@ class Mlogo extends CI_Model
 			$this->logo_db->select('i.img_disk');
 			$this->logo_db->select('i.img_path');
 			$this->logo_db->select('m.name as clpp');
+			$this->logo_db->select('i.clpp as clpp_dtl');
 			$this->logo_db->select('i.cltx_place as place_id');
 			$this->logo_db->select('p.place as place');
 			$this->logo_db->select('i.cltx_color as hpys_id');
-			$this->logo_db->select('s.color as hpys');
+			$this->logo_db->select('s.name as hpys');
+			$this->logo_db->select('s.code as hpys_code');
 			$this->logo_db->select('i.cllx as cllx_code');
 			$this->logo_db->select('c.name as cllx');
 			$this->logo_db->select('i.cltx_dire as fxbh_id');
-			$this->logo_db->select('d.dire as fxbh');
+			$this->logo_db->select('d.name as fxbh');
+			$this->logo_db->select('d.code as fxbh_code');
 			$this->logo_db->select('i.hpzl as hpzl_code');
 			$this->logo_db->select('i.csys as csys_code');
 			$this->logo_db->select('y.name as csys');
@@ -303,14 +381,17 @@ class Mlogo extends CI_Model
 		$this->logo_db->select('i.img_disk');
 		$this->logo_db->select('i.img_path');
 		$this->logo_db->select('m.name as clpp');
+		$this->logo_db->select('i.clpp as clpp_dtl');
 		$this->logo_db->select('i.cltx_place as place_id');
 		$this->logo_db->select('p.place as place');
 		$this->logo_db->select('i.cltx_color as hpys_id');
-		$this->logo_db->select('s.color as hpys');
+		$this->logo_db->select('s.name as hpys');
+		$this->logo_db->select('s.code as hpys_code');
 		$this->logo_db->select('i.cllx as cllx_code');
 		$this->logo_db->select('c.name as cllx');
 		$this->logo_db->select('i.cltx_dire as fxbh_id');
-		$this->logo_db->select('d.dire as fxbh');
+		$this->logo_db->select('d.name as fxbh');
+		$this->logo_db->select('d.code as fxbh_code');
 		$this->logo_db->select('i.hpzl as hpzl_code');
 		$this->logo_db->select('i.csys as csys_code');
 		$this->logo_db->select('y.name as csys');
@@ -318,17 +399,58 @@ class Mlogo extends CI_Model
 		$this->logo_db->join('ppdm as m', 'i.ppdm = m.code');
 		$this->logo_db->join('places as p', 'i.cltx_place = p.id', 'left');
 		$this->logo_db->join('cllx as c', 'i.cllx = c.code', 'left');
-		$this->logo_db->join('platecolor as s', 'i.cltx_color = s.id', 'left');
-		$this->logo_db->join('directions as d', 'i.cltx_dire = d.id', 'left');
+		$this->logo_db->join('hpys as s', 'i.cltx_color = s.id', 'left');
+		$this->logo_db->join('fxbh as d', 'i.cltx_dire = d.id', 'left');
 		$this->logo_db->join('csys as y','i.csys = y.code', 'left');
 		if (isset($data['id'])) {
 			$this->logo_db->where('i.id >', $data['id']);
 		}
-		if (isset($data['place'])) {
+		if (isset($data['kkdd'])) {
+			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
+		} elseif (isset($data['place'])) {
 			$this->logo_db->where('i.cltx_place', $data['place']);
 		}
 		if (isset($data['fxbh'])) {
-			$this->logo_db->where('i.cltx_dire', $data['fxbh']);
+			switch ($data['fxbh']) {
+				case '1':
+				case 1:
+				case 'QT':
+					$fxbh = 1;
+					break;
+				case '2':
+				case 2:
+				case 'IN':
+					$fxbh = 2;
+					break;
+				case '3':
+				case 3:
+				case 'OT':
+					$fxbh = 3;
+					break;
+				case '4':
+				case 4:
+				case 'EW':
+					$fxbh = 4;
+					break;
+				case '5':
+				case 5:
+				case 'SN':
+					$fxbh = 5;
+					break;
+				case '6':
+				case 6:
+				case 'WE':
+					$fxbh = 6;
+					break;
+				case '7':
+				case 7:
+				case 'NS':
+					$fxbh = 7;
+					break;
+				default:
+					$fxbh = 1;
+			}
+			$this->logo_db->where('i.cltx_dire', $fxbh);
 		}
 
 		if (isset($data['match'])) {
