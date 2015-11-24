@@ -16,7 +16,7 @@
 
 class Logo extends Parsing_Controller
 {
-	function __construct()
+	  function __construct()
     {
         // Construct our parent class
         parent::__construct();
@@ -27,7 +27,8 @@ class Logo extends Parsing_Controller
         $this->load->helper('date');
 
         header('Cache-Control: public, max-age=60, s-maxage=60');
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
+        header("HTTP/1.1 200 OK");
 
         #$this->methods['hpys_get']['limit'] = 5000; //50 requests per hour per user/key
 
@@ -71,7 +72,7 @@ class Logo extends Parsing_Controller
         foreach($query->result() as $id=>$row) {
             $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
     }
     
@@ -88,7 +89,7 @@ class Logo extends Parsing_Controller
         foreach($query->result() as $id=>$row) {
             $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
     }
 
@@ -101,12 +102,19 @@ class Logo extends Parsing_Controller
     function hpzl_get()
     {
         $query = $this->Mlogo->getHpzl();
-        $result = array();
-        foreach($query->result() as $id=>$row) {
-            $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name, 'hpys'=>$row->color, 'ps'=>$row->remark);
+        $items = array();
+        foreach($query->result_array() as $id => $row) {
+            $items[$id] = array(
+                'id' => (int)$row['id'],
+                'code' => $row['code'],
+                'name' => $row['name'],
+                'hpys' => $row['hpys'],
+                'hpys_code' => $row['hpys_code'],
+                'ps'=> $row['remark']
+            );
         }
-        header("HTTP/1.1 200 OK");
-        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
+
+        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
     }
 
     /**
@@ -122,7 +130,7 @@ class Logo extends Parsing_Controller
         foreach($query->result() as $id=>$row) {
             $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
     }
 
@@ -139,7 +147,7 @@ class Logo extends Parsing_Controller
         foreach($query->result() as $id=>$row) {
             $result[$id] = array('id'=>(int)$row->id, 'code'=>$row->code, 'name'=>$row->name);
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
     }
 
@@ -156,7 +164,7 @@ class Logo extends Parsing_Controller
         foreach($query->result() as $id=>$row) {
             $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->place, 'config_id'=>(int)$row->config_id, 'kkbh'=>$row->kkbh);
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
     }
 
@@ -174,7 +182,7 @@ class Logo extends Parsing_Controller
             $items[$id]['id'] = array_key_exists($row['id'], $this->kkdd_id) ? $this->kkdd_id[$row['id']] : null;
             $items[$id]['name'] = $row['place'];
         }
-        header("HTTP/1.1 200 OK");
+
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
     }
 
@@ -200,7 +208,7 @@ class Logo extends Parsing_Controller
             foreach($query->result() as $id=>$row) {
                 $result[$id] = array('code' => $row->ppdm2, 'name' => $row->name);
             }
-            header("HTTP/1.1 200 OK");
+
             echo json_encode(array('total_count' => $query->num_rows(), 'code' => $code, 'items' => $result));
         }
     }
@@ -229,7 +237,6 @@ class Logo extends Parsing_Controller
             }
         }
 
-        header("HTTP/1.1 200 OK");
         echo json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
     }
 
@@ -259,7 +266,7 @@ class Logo extends Parsing_Controller
         unset($result['img_ip']);
         unset($result['img_disk']);
         unset($result['img_path']);
-        header("HTTP/1.1 200 OK");
+
         header('Cache-Control:max-age=0');
         echo json_encode($result);
     }
@@ -311,7 +318,7 @@ class Logo extends Parsing_Controller
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
         }
-        header("HTTP/1.1 200 OK");
+
         header('Cache-Control:max-age=0');
 
         echo json_encode($result);
@@ -365,7 +372,7 @@ class Logo extends Parsing_Controller
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
         }
-        header("HTTP/1.1 200 OK");
+
         header('Cache-Control:max-age=0');
 
         echo json_encode($result);
@@ -427,7 +434,7 @@ class Logo extends Parsing_Controller
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
         }
-        header("HTTP/1.1 200 OK");
+
         header('Cache-Control:max-age=0');
         echo json_encode($result);
     }
@@ -489,7 +496,7 @@ class Logo extends Parsing_Controller
             unset($result['items'][$id]['img_disk']);
             unset($result['items'][$id]['img_path']);
         }
-        header("HTTP/1.1 200 OK");
+
         header('Cache-Control:max-age=0');
         echo json_encode($result);
     }
