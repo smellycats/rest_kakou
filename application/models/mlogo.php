@@ -12,6 +12,23 @@ class Mlogo extends CI_Model
 		parent::__construct();
 
 		$this->logo_db = $this->load->database('logo_db', TRUE);
+
+        $this->place_id = array(
+            '441323001' => 14,
+            '441323002' => 7,
+            '441323003' => 2,
+            '441323004' => 6,
+            '441323005' => 5,
+            '441323006' => 8,
+            '441323007' => 4,
+            '441323008' => 12,
+            '441323009' => 3,
+            '441323010' => 9,
+            '441323011' => 10,
+            '441323012' => 11,
+            '441323013' => 13,  #广惠高速入口白花卡哨
+            '441323014' => 15   #大岭镇(潮莞高速路口)往惠州
+        );
 	}
 	
     /**
@@ -182,11 +199,10 @@ class Mlogo extends CI_Model
 		if (isset($q['ppdm'])) {
 			$this->logo_db->like('i.ppdm2', $q['ppdm'], 'after');
 		}
-		// 卡口地点
-		if (isset($q['place'])) {
-			$this->logo_db->where('i.cltx_place', $q['place']);
-		} elseif (isset($data['kkdd'])) {
-			$this->logo_db->where('i.cltx_place', $data['kkdd']);
+		if (isset($data['kkdd'])) {
+			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
+		} elseif (isset($data['place'])) {
+			$this->logo_db->where('i.cltx_place', $data['place']);
 		}
 		// 方向
 		if (isset($q['fxbh'])) {
@@ -382,10 +398,10 @@ class Mlogo extends CI_Model
 		if (isset($data['id'])) {
 			$this->logo_db->where('i.id >', $data['id']);
 		}
-		if (isset($data['place'])) {
+		if (isset($data['kkdd'])) {
+			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
+		} elseif (isset($data['place'])) {
 			$this->logo_db->where('i.cltx_place', $data['place']);
-		} elseif (isset($data['kkdd'])) {
-			$this->logo_db->where('i.cltx_place', $data['kkdd']);
 		}
 		if (isset($data['fxbh'])) {
 			switch ($data['fxbh']) {
