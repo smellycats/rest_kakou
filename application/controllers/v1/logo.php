@@ -29,7 +29,7 @@ class Logo extends Parsing_Controller
         header('Cache-Control: public, max-age=60, s-maxage=60');
         header('Content-Type: application/json');
 
-        $this->methods['hpys_get']['limit'] = 5000; //50 requests per hour per user/key
+        #$this->methods['hpys_get']['limit'] = 5000; //50 requests per hour per user/key
 
         $this->imgip = array(
             '1' => '127.0.0.1',
