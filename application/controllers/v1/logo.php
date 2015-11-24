@@ -35,6 +35,23 @@ class Logo extends Parsing_Controller
             '1' => '127.0.0.1',
             '2' => '127.0.0.1'
         );
+
+        $this->kkdd_id = array(
+            '14' => '441323001',
+            '7' => '441323002',
+            '2' => '441323003',
+            '6' => '441323004',
+            '5' => '441323005',
+            '8' => '441323006',
+            '4' => '441323007',
+            '12' => '441323008',
+            '3' => '441323009',
+            '9' => '441323010',
+            '10' => '441323011',
+            '11' => '441323012',
+            '13' => '441323013',  #广惠高速入口白花卡哨
+            '15' => '441323014'   #大岭镇(潮莞高速路口)往惠州
+        );
     }
 
     function test_get()
@@ -144,20 +161,21 @@ class Logo extends Parsing_Controller
     }
 
     /**
-     * get place
-     * 获取车辆类型列表
+     * get kkdd
+     * 获取卡口地点列表
      *
      * @return json
      */
     function kkdd_get()
     {
         $query = $this->Mlogo->getPlace();
-        $result = array();
-        foreach($query->result() as $id=>$row) {
-            $result[$id] = array('id'=>(int)$row->id, 'name'=>$row->place, 'config_id'=>(int)$row->config_id, 'kkbh'=>$row->kkbh);
+        $items = array();
+        foreach ($query->result_array() as $id => $row) {
+            $items[$id]['id'] = array_key_exists($row['id'], $this->kkdd_id) ? $this->kkdd_id[$row['id']] : null;
+            $items[$id]['name'] = $row['place'];
         }
         header("HTTP/1.1 200 OK");
-        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $result));
+        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
     }
 
     /**
@@ -187,6 +205,34 @@ class Logo extends Parsing_Controller
         }
     }
 
+
+    /**
+     * get ppdmall
+     * 获取全部品牌代码列表
+     *
+     * @return json
+     */
+    function ppdmall_get()
+    {
+        $query = $this->Mlogo->getPpdm();
+        $items = array();
+        foreach ($query->result_array() as $id => $row) {
+            $items[$id]['id'] = (int)$row['id'];
+            $items[$id]['code'] = $row['code'];
+            $items[$id]['name'] = $row['name'];
+            $query2 = $this->Mlogo->getPpdmByCode($row['code']);
+            foreach ($query2->result_array() as $id2 => $row2) {
+                $items[$id]['items'][$id2] = array(
+                    'code' => $row2['clpp2'],
+                    'name' => $row2['name2']
+                );
+            }
+        }
+
+        header("HTTP/1.1 200 OK");
+        echo json_encode(array('total_count' => $query->num_rows(), 'items' => $items));
+    }
+
     /**
      * get carinfo by id
      * 获取车辆类型列表
@@ -208,7 +254,7 @@ class Logo extends Parsing_Controller
                              . $this->imgip[$result['img_ip']]
                              . '/rest_kakou/index.php/v1/img/thumb?id='
                              . $result['id'];
-        $result['kkdd_id'] = (int)$result['place_id'];
+        $result['kkdd_id'] = array_key_exists($result['place_id'], $this->kkdd_id) ? $this->kkdd_id[$result['place_id']] : null;
         $result['kkdd'] = $result['place'];
         unset($result['img_ip']);
         unset($result['img_disk']);
@@ -259,7 +305,7 @@ class Logo extends Parsing_Controller
                                                . @$this->imgip[$row['img_ip']]
                                                . '/rest_kakou/index.php/v1/img/thumb?id='
                                                . $row['id'];
-            $result[$id]['kkdd_id'] = (int)$row['place_id'];
+            $result[$id]['kkdd_id'] = array_key_exists($row['place_id'], $this->kkdd_id) ? $this->kkdd_id[$row['place_id']] : null;
             $result[$id]['kkdd'] = $row['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
@@ -358,13 +404,13 @@ class Logo extends Parsing_Controller
                     $this->Mlogo->setFresh($user_id, array('carinfo_id'=>$carinfo_id, 'modified'=>mdate('%Y-%m-%d %H:%m:%s')));
                     break;
                 }
-                # 休眠250毫秒
-                usleep(250000);
+                # 休眠100毫秒
+                usleep(100000);
             }
         }
         $result['items'] = $query->result_array();
         $result['total_count'] = $query->num_rows();
-        foreach($result['items'] as $id=>$row) {
+        foreach($result['items'] as $id => $row) {
             $result['items'][$id]['imgurl'] = 'http://'
                                             . @$this->imgip[$row['img_ip']]
                                             . '/SpreadData'
@@ -375,7 +421,7 @@ class Logo extends Parsing_Controller
                                                . @$this->imgip[$row['img_ip']]
                                                . '/rest_kakou/index.php/v1/img/thumb?id='
                                                . $row['id'];
-            $result[$id]['kkdd_id'] = (int)$row['place_id'];
+            $result[$id]['kkdd_id'] = array_key_exists($row['place_id'], $this->kkdd_id) ? $this->kkdd_id[$row['place_id']] : null;
             $result[$id]['kkdd'] = $row['place'];
             unset($result['items'][$id]['img_ip']);
             unset($result['items'][$id]['img_disk']);
