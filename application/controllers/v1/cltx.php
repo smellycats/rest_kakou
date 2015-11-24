@@ -24,7 +24,7 @@ class Cltx extends Parsing_Controller
         $this->load->model('Mcltx');
 
         //header('Cache-Control: public, max-age=60, s-maxage=60');
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
         header("HTTP/1.1 200 OK");
     }
     
