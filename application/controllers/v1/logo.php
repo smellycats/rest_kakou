@@ -226,13 +226,14 @@ class Logo extends Parsing_Controller
         $items = array();
         foreach ($query->result_array() as $id => $row) {
             $items[$id]['id'] = (int)$row['id'];
-            $items[$id]['code'] = $row['code'];
+            $items[$id]['code'] = $row['ppdm'];
             $items[$id]['name'] = $row['name'];
-            $query2 = $this->Mlogo->getPpdmByCode($row['code']);
+            $query2 = $this->Mlogo->getPpdmByCode($row['ppdm']);
             foreach ($query2->result_array() as $id2 => $row2) {
                 $items[$id]['items'][$id2] = array(
-                    'code' => $row2['clpp2'],
-                    'name' => $row2['name2']
+                    'id' => (int)$row2['id'],
+                    'code' => $row2['ppdm2'],
+                    'name' => $row2['name']
                 );
             }
         }
