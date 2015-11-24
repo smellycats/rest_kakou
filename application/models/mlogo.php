@@ -33,8 +33,9 @@ class Mlogo extends CI_Model
 	public function getHpzl()
 	{	
 		$this->logo_db->select('hpzl.*');
-		$this->logo_db->select('platecolor.color');
-		$this->logo_db->join('platecolor', 'platecolor.id = hpzl.color_id');
+		$this->logo_db->select('hpys.name as hpys');
+		$this->logo_db->select('hpys.code as hpys_code');
+		$this->logo_db->join('hpys', 'hpys.code = hpzl.hpys_code');
 		return $this->logo_db->get('hpzl');
 	}
 
