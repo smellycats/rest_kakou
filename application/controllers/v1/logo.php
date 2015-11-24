@@ -16,7 +16,7 @@
 
 class Logo extends Parsing_Controller
 {
-	  function __construct()
+	  public function __construct()
     {
         // Construct our parent class
         parent::__construct();
@@ -55,7 +55,7 @@ class Logo extends Parsing_Controller
         );
     }
 
-    function test_get()
+    public function test_get()
     {
         echo json_encode(array('test'=> '123'));
     }
@@ -65,7 +65,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function hpys_get()
+    public function hpys_get()
     {
         $query = $this->Mlogo->getHpys();
         $result = array();
@@ -82,7 +82,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function csys_get()
+    public function csys_get()
     {
         $query = $this->Mlogo->getCsys();
         $result = array();
@@ -99,7 +99,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function hpzl_get()
+    public function hpzl_get()
     {
         $query = $this->Mlogo->getHpzl();
         $items = array();
@@ -123,7 +123,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function cllx_get()
+    public function cllx_get()
     {
         $query = $this->Mlogo->getCllx();
         $result = array();
@@ -140,7 +140,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function fxbh_get()
+    public function fxbh_get()
     {
         $query = $this->Mlogo->getFxbh();
         $result = array();
@@ -157,7 +157,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function place_get()
+    public function place_get()
     {
         $query = $this->Mlogo->getPlace();
         $result = array();
@@ -174,7 +174,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function kkdd_get()
+    public function kkdd_get()
     {
         $query = $this->Mlogo->getPlace();
         $items = array();
@@ -192,7 +192,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function ppdm_get()
+    public function ppdm_get()
     {
         $code = $this->uri->segment(4);
         if ($code == Null) {
@@ -220,7 +220,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function ppdmall_get()
+    public function ppdmall_get()
     {
         $query = $this->Mlogo->getPpdm();
         $items = array();
@@ -246,7 +246,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function carinfo_get()
+    public function carinfo_get()
     {
         $id = (int)$this->uri->segment(4);
         $query = $this->Mlogo->getCarinfoById($id);
@@ -277,7 +277,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function carinfos_get()
+    public function carinfos_get()
     {
         if (empty(@$this->gets['q'])) {
             $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
@@ -331,7 +331,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function carinfos2_get()
+    public function carinfos2_get()
     {
         if (empty(@$this->gets['q'])) {
             $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
@@ -384,7 +384,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function fresh_get()
+    public function fresh_get()
     {
         if (empty(@$this->gets['q'])) {
             $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
@@ -445,7 +445,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    function fresh2_get()
+    public function fresh2_get()
     {
         if (empty(@$this->gets['q'])) {
             $e = [array('resource'=>'Search', 'field'=>'q', 'code'=>'missing')];
