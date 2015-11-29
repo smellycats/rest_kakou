@@ -42,6 +42,7 @@ class Test extends CI_Controller
         header('Content-Type: application/json');
         header('Cache-Control: no-cache');
         header('Pragma: no-cache');
+        header('Access-Control-Allow-Origin:*');
         //header("HTTP/1.1 200 OK");
         echo json_encode([array('name' =>'jack', 'age'=>10),array('name' =>'ken', 'age'=>21)]);
     }
