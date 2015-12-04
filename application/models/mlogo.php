@@ -299,7 +299,7 @@ class Mlogo extends CI_Model
 			}
 		}
 
-		if ($per_page == 0){
+		if ($per_page == 0) {
 			$this->logo_db->select('count(*) as sum');
 			
 			return $this->logo_db->get('carinfo as i');
