@@ -279,7 +279,7 @@ class Logo extends Parsing_Controller
      *
      * @return json
      */
-    public function carinfoByCltxId_get()
+    public function carinfo2_get()
     {
         $id = (int)$this->uri->segment(4);
         $query = $this->Mlogo->getCarinfoByCltxId($id);
@@ -314,6 +314,7 @@ class Logo extends Parsing_Controller
     {
         $query = $this->Mlogo->getCarinfoMaxId();
 
+        header('Cache-Control: max-age=0');
         echo json_encode(array('maxid' => $query->row_array()['maxid']));
     }
 
