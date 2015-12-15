@@ -28,11 +28,23 @@ class Upload extends CI_Controller
         $this->load->model('Mversion');
     }
 
+    /**
+     * 
+     * 文件上传首页
+     *
+     * @return object
+     */
     public function index()
     {
         $this->load->view('upload_form', array('error' => ''));
     }
 
+    /**
+     * receive upload file
+     * 文件上传控制器
+     *
+     * @return object
+     */
     public function do_upload()
     {
         $config['upload_path'] = 'uploads';
@@ -45,14 +57,20 @@ class Upload extends CI_Controller
             $this->load->view('upload_form', $error);
         } else {
             $data = array('upload_data' => $this->upload->data());
-            $file_name = explode('.', $this->upload->data()['file_name'])[0];
-            $d['version'] = explode('_', $file_name)[1];
+            $file_info = pathinfo($this->upload->data()['file_name']);
+            $d['version'] = explode('_', $file_info['filename'])[1];
             $d['file_name'] = $this->upload->data()['file_name'];
             $this->Mversion->addVersion($d);
             $this->load->view('upload_success', $data);
         }
     }
 
+    /**
+     * get latest version
+     * 获取最新版本号
+     *
+     * @return json
+     */
     public function latest_version()
     {
         $row = $this->Mversion->getLatestVersion()->row_array();
@@ -67,8 +85,10 @@ class Upload extends CI_Controller
     public function test()
     {
         $d['version'] = '0.1.0';
-        $d['file_name'] = '死肥字_0.1.0.apk';
-        $this->Mversion->addVersion($d);
+        $d['file_name'] = 'release_0.1.0.apk';
+        $v = pathinfo($d['file_name']);
+        var_dump($v);
+        #$this->Mversion->addVersion($d);
     }
 
 }
