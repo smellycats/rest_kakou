@@ -178,7 +178,7 @@ class Logo extends Parsing_Controller
     {
         $query = $this->Mlogo->getPlace();
         $items = array();
-        foreach ($query->result_array() as $id => $row) {
+        foreach ($query->result_array() as $id=>$row) {
             $items[$id]['id'] = array_key_exists($row['id'], $this->kkdd_id) ? $this->kkdd_id[$row['id']] : null;
             $items[$id]['name'] = $row['place'];
         }
@@ -274,6 +274,50 @@ class Logo extends Parsing_Controller
     }
 
     /**
+     * get carinfo by cltx_id
+     * 获取车辆类型列表
+     *
+     * @return json
+     */
+    public function carinfoByCltxId_get()
+    {
+        $id = (int)$this->uri->segment(4);
+        $query = $this->Mlogo->getCarinfoByCltxId($id);
+        $result = $query->row_array();
+        $result['imgurl'] = 'http://'
+                          . $this->imgip[$result['img_ip']]
+                          . '/SpreadData'
+                          . $result['img_disk']
+                          . '/'
+                          . str_replace("\\", '/', $result['img_path']);
+        $result['thumb_url'] = 'http://'
+                             . $this->imgip[$result['img_ip']]
+                             . '/rest_kakou/index.php/v1/img/thumb?id='
+                             . $result['id'];
+        $result['kkdd_id'] = array_key_exists($result['place_id'], $this->kkdd_id) ? $this->kkdd_id[$result['place_id']] : null;
+        $result['kkdd'] = $result['place'];
+        unset($result['img_ip']);
+        unset($result['img_disk']);
+        unset($result['img_path']);
+
+        header('Cache-Control:max-age=0');
+        echo json_encode($result);
+    }
+
+    /**
+     * get carinfo maxid
+     * 获取车辆类型列表最大ID
+     *
+     * @return json
+     */
+    public function maxid_get()
+    {
+        $query = $this->Mlogo->getCarinfoMaxId();
+
+        echo json_encode(array('maxid' => $query->row_array()['maxid']));
+    }
+
+    /**
      * get carinfos
      * 获取车辆类型列表
      *
@@ -286,7 +330,7 @@ class Logo extends Parsing_Controller
             $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
         }
         // 解析q参数
-        $q_arr = h_convert_param($this->gets['q']);
+        $q_arr = h_convert_param3($this->gets['q']);
         if (empty(@$q_arr['st'])) {
             $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
         }
@@ -339,10 +383,11 @@ class Logo extends Parsing_Controller
             $this->response(array('message' => 'Validation Failed', 'errors' => $e), 422);
         }
         // 解析q参数
-        $q_arr = h_convertParam($this->gets['q']);
+        $q_arr = h_convert_param3($this->gets['q']);
         $user_id = @$q_arr['q'];
         $fresh = $this->Mlogo->getFreshByUserId($user_id);
-        
+        # 查询最久30分钟前数据
+        $q_arr['t'] = mdate("%Y-%m-%d %H:%i:%s", strtotime('-30 minutes'));
         if ($fresh->num_rows() == 0) {
             $query = $this->Mlogo->getFresh($q_arr);
             $carinfo_id = $query->num_rows == 0 ? 0 : $query->row()->id;
