@@ -16,7 +16,7 @@
 
 class Cltx extends Parsing_Controller
 {
-	function __construct()
+	public function __construct()
     {
         // Construct our parent class
         parent::__construct();
@@ -33,7 +33,7 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function infos_get()
+    public function infos_get()
     {
         $data = $this->input->get(NULL, true);
 
@@ -66,7 +66,7 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function cltx_get()
+    public function cltx_get()
     {
         $id = $this->url->segment(4);
         
@@ -94,7 +94,7 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function cltxs_get()
+    public function cltxs_get()
     {
         $data['id'] = $this->uri->segment(4);
         $data['last_id'] = $this->uri->segment(5);
@@ -127,7 +127,20 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function cltxmaxid_get()
+    public function cltxmaxid_get()
+    {
+        $query = $this->Mcltx->getCltxMaxId();
+        $result = array('maxid' => (int)$query->row()->MAXID);
+
+        echo json_encode($result);
+    }
+
+    /**
+     * 获取cltx表最大ID
+     * 
+     * @return json
+     */
+    public function maxid_get()
     {
         $query = $this->Mcltx->getCltxMaxId();
         $result = array('maxid' => (int)$query->row()->MAXID);
@@ -140,7 +153,7 @@ class Cltx extends Parsing_Controller
      * 
      * @return json
      */
-    function cltxmaxid2_get()
+    public function cltxmaxid2_get()
     {
         $data = $this->input->get(NULL, true);
 
