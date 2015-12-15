@@ -5,9 +5,9 @@
 <body>
   <?php echo $error; ?>
   <?php echo form_open_multipart('upload/do_upload'); ?>
-  <input type="file" name="userfile" size="100">
-  <br /><br />
-  <input type="submit" value="upload" />
-</form>
+	<input type="file" name="userfile" size="100">
+	<br /><br />
+	<input type="submit" value="upload" />
+  </form>
 </body>
 </html>
