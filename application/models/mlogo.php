@@ -199,10 +199,15 @@ class Mlogo extends CI_Model
 		if (isset($q['ppdm'])) {
 			$this->logo_db->like('i.ppdm2', $q['ppdm'], 'after');
 		}
-		if (isset($data['kkdd'])) {
-			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
-		} elseif (isset($data['place'])) {
-			$this->logo_db->where('i.cltx_place', $data['place']);
+		// 卡口地点
+		if (isset($q['kkdd'])) {
+			$kkdd_array = array();
+			foreach ($q['kkdd'] as $single_kkdd) {
+				array_push($kkdd_array, array_key_exists($single_kkdd, $this->place_id) ? $this->place_id[$single_kkdd] : 0);
+			}
+			$this->logo_db->where_in('i.cltx_place', $kkdd_array);
+		} elseif (isset($q['place'])) {
+			$this->logo_db->where('i.cltx_place', $q['place']);
 		}
 		// 方向
 		if (isset($q['fxbh'])) {
@@ -359,6 +364,7 @@ class Mlogo extends CI_Model
 			return $this->logo_db->get('carinfo as i', $per_page, ($page - 1) * $per_page);
 		}
 	}
+
     /**
      * 获取最新车辆信息
      * 
@@ -405,8 +411,13 @@ class Mlogo extends CI_Model
 		if (isset($data['id'])) {
 			$this->logo_db->where('i.id >', $data['id']);
 		}
+		// 卡口地点
 		if (isset($data['kkdd'])) {
-			$this->logo_db->where('i.cltx_place', array_key_exists($data['kkdd'], $this->place_id) ? $this->place_id[$data['kkdd']] : 1);
+			$kkdd_array = array();
+			foreach ($data['kkdd'] as $single_kkdd) {
+				array_push($kkdd_array, array_key_exists($single_kkdd, $this->place_id) ? $this->place_id[$single_kkdd] : 1);
+			}
+			$this->logo_db->where_in('i.cltx_place', $kkdd_array);
 		} elseif (isset($data['place'])) {
 			$this->logo_db->where('i.cltx_place', $data['place']);
 		}
@@ -452,7 +463,7 @@ class Mlogo extends CI_Model
 			}
 			$this->logo_db->where('i.cltx_dire', $fxbh);
 		}
-
+		$this->load_db->where('i.passtime >', $data['t']);
 		if (isset($data['match'])) {
 			if ($data['match'] == 1) {
 				$this->logo_db->where('');
@@ -499,6 +510,31 @@ class Mlogo extends CI_Model
 	{
 		$this->logo_db->where('user_id', $user_id);
 		return $this->logo_db->update('fresh', $data);
+	}
+
+	/**
+	 * 根据CLTX id查询车辆信息
+	 * 
+	 * @param int $cltx_id cltx表ID
+	 * 
+	 * @return object
+	 */
+	public function getCarinfoByCltxId($cltx_id)
+	{
+		$this->logo_db->select('*');
+		$this->logo_db->where('cltx_id', $cltx_id);
+		return $this->logo->get('carinfo');
+	}
+
+	/**
+	 * 查询车辆信息表最大ID
+	 * 
+	 * 
+	 * @return object
+	 */
+	public function getCarinfoMaxId()
+	{
+		return $this->logo_db->query('SELECT max(id) AS maxid FROM carinfo');
 	}
 
 }
