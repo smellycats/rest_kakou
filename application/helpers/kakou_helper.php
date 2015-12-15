@@ -103,6 +103,80 @@ if ( ! function_exists('h_convert_param'))
 }
 
 /**
+ * h_convert_param2
+ *
+ * q 参数转换成数组
+ *
+ * @access  public
+ * @param   string
+ * @return  array
+ */
+
+if ( ! function_exists('h_convert_param2'))
+{
+    function h_convert_param2($q)
+    {
+        $queryParts = explode('+', $q);
+
+        $params = array();
+        foreach ($queryParts as $id=>$param) {
+            if ($id == 0) {
+                $params['q'] = $param;
+            } else {
+                $key = strstr($param, ':', true);
+                if (!array_key_exists($key, $params)) {
+                    $params[$key] = array();
+                }
+                if ($key) {
+                    $val = substr(strstr($param, ':'), 1);
+                    array_push($params[$key], $val);
+                }
+            }
+        }
+        return $params;
+    }
+}
+
+/**
+ * h_convert_param3
+ *
+ * q 参数转换成数组
+ *
+ * @access  public
+ * @param   string
+ * @return  array
+ */
+
+if ( ! function_exists('h_convert_param3'))
+{
+    function h_convert_param3($q)
+    {
+        $queryParts = explode('+', $q);
+
+        $params = array();
+        $params['kkdd'] = array();
+        foreach ($queryParts as $id=>$param) {
+            if ($id == 0) {
+                $params['q'] = $param;
+            } else {
+                $key = strstr($param, ':', true);
+                if ($key == 'kkdd') {
+                    array_push($params['kkdd'], substr(strstr($param, ':'), 1));
+                } elseif ($key) {
+                    $val = substr(strstr($param, ':'), 1);
+                    $params[$key] = $val;
+                }
+            }
+        }
+        // 如果参数没有kkdd则移除
+        if (empty($params['kkdd'])) {
+            unset($params['kkdd']);
+        }
+        return $params;
+    }
+}
+
+/**
  * h_create_img_url
  *
  * q 生成图片url地址
